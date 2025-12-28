@@ -1,1 +1,112 @@
-body{font-family:Cairo,Arial;background:#e6e9ef} .hidden{display:none}
+:root{
+  --bg:#e6e9ef;
+  --shadow:#b8bec9;
+  --white:#fff;
+  --primary:#3498db;
+}
+
+body{
+  background:var(--bg);
+  font-family:'Cairo',sans-serif;
+  margin:0;
+  padding-top:80px;
+  direction:rtl;
+}
+
+.hidden{display:none!important}
+
+/* Login */
+.screen-center{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.card-3d{
+  background:var(--bg);
+  padding:25px;
+  border-radius:20px;
+  box-shadow:
+    10px 10px 20px var(--shadow),
+    -10px -10px 20px var(--white);
+  width:90%;
+  max-width:450px;
+  text-align:center;
+}
+
+/* Top Bar */
+.top-fab-bar{
+  position:fixed;
+  top:10px;
+  left:2%;
+  right:2%;
+  height:60px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  background:var(--bg);
+  border-radius:30px;
+  box-shadow:
+    8px 8px 16px var(--shadow),
+    -8px -8px 16px var(--white);
+  z-index:1000;
+}
+
+.fab-circle{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:none;
+  background:var(--bg);
+  color:var(--primary);
+  font-size:1.1rem;
+  box-shadow:
+    4px 4px 8px var(--shadow),
+    -4px -4px 8px var(--white);
+  cursor:pointer;
+}
+
+.fab-circle:hover{
+  box-shadow:
+    inset 2px 2px 5px var(--shadow),
+    inset -2px -2px 5px var(--white);
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:10px;
+  text-align:center;
+}
+
+thead{
+  background:#dfe4ea;
+}
+
+/* Footer */
+.financial-footer-3d{
+  margin-top:15px;
+  display:flex;
+  gap:10px;
+}
+
+.fin-item label{
+  font-weight:bold;
+  color:var(--primary);
+  margin-bottom:5px;
+  display:block;
+}
+
+.display-box-3d{
+  padding:10px;
+  border-radius:10px;
+  background:var(--bg);
+  box-shadow:
+    inset 3px 3px 6px var(--shadow),
+    inset -3px -3px 6px var(--white);
+}
