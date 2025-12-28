@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نظام المسوري برو</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#3498db">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+<section id="login-section">
+  <h2>نظام المحاسبة</h2>
+  <button id="login-btn">دخول بالبصمة</button>
+</section>
+
+<section id="main-app" class="hidden">
+  <table>
+    <thead>
+      <tr><th>م</th><th>تفاصيل</th><th>سعر</th><th>كمية</th><th>الإجمالي</th><th>حذف</th></tr>
+    </thead>
+    <tbody id="data-rows"></tbody>
+  </table>
+
+  <input id="received-amount" type="number" placeholder="المسلّم">
+  <div>الإجمالي: <span id="grand-total">0</span></div>
+  <div>المتبقي: <span id="balance-amount">0</span></div>
+</section>
+
+<script src="app.secure.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js');
+}
+if('Notification' in window){
+  Notification.requestPermission();
+}
+</script>
+
+</body>
+</html>
