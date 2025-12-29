@@ -1,28 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.getElementById("loginForm").addEventListener("submit", function(e){
+  e.preventDefault();
 
-  const form = document.getElementById("loginForm");
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    // بيانات تجريبية
-    if (username === "admin" && password === "admin") {
-
-      localStorage.setItem("loggedUser", JSON.stringify({
-        username: "admin",
-        role: "admin",
-        loginTime: Date.now()
-      }));
-
-      // التحويل بعد النجاح
-      window.location.href = "dashboard.html";
-
-    } else {
-      alert("اسم المستخدم أو كلمة المرور غير صحيحة");
-    }
-  });
-
+  // حسابات تجريبية
+  if (username === "admin" && password === "admin" && role === "admin") {
+    localStorage.setItem("role", "admin");
+    window.location.href = "dashboard.html";
+  }
+  else if (username === "user" && password === "user" && role === "user") {
+    localStorage.setItem("role", "user");
+    window.location.href = "dashboard.html";
+  }
+  else {
+    alert("بيانات الدخول غير صحيحة");
+  }
 });
