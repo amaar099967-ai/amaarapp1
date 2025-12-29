@@ -1,1 +1,28 @@
-function login(){const u=username.value,p=password.value;if(!u||!p){alert("بيانات ناقصة");return}localStorage.setItem("session",JSON.stringify({user:u,role:role.value}));location.href="dashboard.html"}function logout(){localStorage.removeItem("session");location.href="index.html"}(function(){const s=localStorage.getItem("session");if(location.pathname.includes("dashboard")&&!s){location.href="index.html"}if(s&&location.pathname.includes("dashboard")){document.getElementById("welcome").innerText="مرحبا "+JSON.parse(s).user}})();
+document.addEventListener("DOMContentLoaded", () => {
+
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    // بيانات تجريبية
+    if (username === "admin" && password === "admin") {
+
+      localStorage.setItem("loggedUser", JSON.stringify({
+        username: "admin",
+        role: "admin",
+        loginTime: Date.now()
+      }));
+
+      // التحويل بعد النجاح
+      window.location.href = "dashboard.html";
+
+    } else {
+      alert("اسم المستخدم أو كلمة المرور غير صحيحة");
+    }
+  });
+
+});
