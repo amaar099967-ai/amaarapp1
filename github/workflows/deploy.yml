@@ -1,0 +1,102 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:  # لتشغيل يدوي
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Create required files
+      run: |
+        # إنشاء الملفات الأساسية إذا كانت غير موجودة
+        mkdir -p css js
+        
+        # إنشاء ملف index.html إذا لم يكن موجوداً
+        if [ ! -f "index.html" ]; then
+          echo '<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حسابات نهائية لأعمال الكهرباء</title>
+    <style>
+        body { 
+            background: #000; 
+            color: #0f0; 
+            font-family: monospace; 
+            text-align: center; 
+            padding: 50px; 
+        }
+        h1 { color: #0f0; }
+    </style>
+</head>
+<body>
+    <h1>⚡ حسابات نهائية لأعمال الكهرباء ⚡</h1>
+    <p>جاري تحضير التطبيق...</p>
+</body>
+</html>' > index.html
+        fi
+        
+        # إنشاء ملفات CSS إذا لم تكن موجودة
+        if [ ! -f "css/styles.css" ]; then
+          echo '/* التطبيق قيد التطوير */' > css/styles.css
+        fi
+        
+        # إنشاء ملف manifest.json
+        echo '{
+  "name": "حسابات نهائية لأعمال الكهرباء",
+  "short_name": "حسابات الكهرباء",
+  "description": "برنامج محاسبي متكامل للمقاولات الكهربائية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "ar",
+  "dir": "rtl"
+}' > manifest.json
+        
+        # إنشاء ملف service worker
+        echo '// Service Worker
+self.addEventListener("install", event => {
+    console.log("Service Worker installed");
+});
+
+self.addEventListener("fetch", event => {
+    event.respondWith(fetch(event.request));
+});' > sw.js
+        
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
