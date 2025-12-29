@@ -1,0 +1,1 @@
+let lang="ar";function switchLang(){lang=lang==="ar"?"en":"ar";document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.getElementById("title").innerText=lang==="ar"?"تسجيل الدخول":"Login"}
