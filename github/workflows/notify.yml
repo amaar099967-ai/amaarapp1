@@ -1,0 +1,67 @@
+name: Notify on Changes
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Send Telegram notification
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_CHAT_ID }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          🔔 تحديث جديد على نظام الحسابات الكهربائية
+          
+          📌 الفرع: ${{ github.ref }}
+          👤 المستخدم: ${{ github.actor }}
+          📝 الرسالة: ${{ github.event.commits[0].message }}
+          🔗 الرابط: ${{ github.event.commits[0].url }}
+          
+          تم تحديث النظام بنجاح ✅
+          
+    - name: Send email notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: 'تحديث نظام الحسابات الكهربائية'
+        to: ${{ secrets.EMAIL_TO }}
+        from: GitHub Actions
+        html_body: |
+          <!DOCTYPE html>
+          <html dir="rtl">
+          <head>
+              <meta charset="UTF-8">
+              <style>
+                  body { font-family: Arial, sans-serif; }
+                  .container { max-width: 600px; margin: 0 auto; }
+                  .header { background: #000; color: #0f0; padding: 20px; text-align: center; }
+                  .content { padding: 20px; background: #f5f5f5; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="header">
+                      <h1>⚡ نظام الحسابات الكهربائية ⚡</h1>
+                  </div>
+                  <div class="content">
+                      <h2>🔔 تحديث جديد</h2>
+                      <p><strong>الفرع:</strong> ${{ github.ref }}</p>
+                      <p><strong>المستخدم:</strong> ${{ github.actor }}</p>
+                      <p><strong>الرسالة:</strong> ${{ github.event.commits[0].message }}</p>
+                      <p><strong>الرابط:</strong> <a href="${{ github.event.commits[0].url }}">عرض التحديث</a></p>
+                      <hr>
+                      <p>تم تحديث النظام بنجاح ✅</p>
+                  </div>
+              </div>
+          </body>
+          </html>
