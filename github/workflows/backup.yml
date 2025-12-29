@@ -1,0 +1,71 @@
+name: Backup to Google Drive
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # كل يوم أحد الساعة 12 منتصف الليل
+  workflow_dispatch:      # تشغيل يدوي
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create backup archive
+      run: |
+        # إنشاء نسخة احتياطية
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+        BACKUP_NAME="electrical_backup_${TIMESTAMP}"
+        
+        # إنشاء أرشيف
+        tar -czf ${BACKUP_NAME}.tar.gz \
+          --exclude='node_modules' \
+          --exclude='.git' \
+          .
+        
+        echo "Backup created: ${BACKUP_NAME}.tar.gz"
+        
+        # إنشاء ملف معلومات النسخة الاحتياطية
+        echo "# نسخة احتياطية - نظام الحسابات الكهربائية" > backup_info.md
+        echo "## معلومات النسخة" >> backup_info.md
+        echo "- التاريخ: $(date)" >> backup_info.md
+        echo "- الفرع: ${{ github.ref }}" >> backup_info.md
+        echo "- آخر commit: ${{ github.sha }}" >> backup_info.md
+        echo "" >> backup_info.md
+        echo "## الملفات المضمنة" >> backup_info.md
+        echo '```' >> backup_info.md
+        find . -type f -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.json" | sort >> backup_info.md
+        echo '```' >> backup_info.md
+        
+    - name: Upload to GitHub Releases
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: |
+          *.tar.gz
+          backup_info.md
+        tag_name: backup-${{ github.run_number }}
+        name: "نسخة احتياطية #${{ github.run_number }}"
+        body: |
+          نسخة احتياطية تلقائية من نظام الحسابات الكهربائية
+          
+          - **التاريخ**: $(date)
+          - **الفرع**: ${{ github.ref }}
+          - **الرقم**: #${{ github.run_number }}
+          
+          تم إنشاء هذه النسخة تلقائياً بواسطة GitHub Actions.
+        draft: amaar almswry
+        prerelease: false
+        
+    - name: Upload backup as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: electrical-backup
+        path: |
+          *.tar.gz
+          backup_info.md
+        retention-days: 30
